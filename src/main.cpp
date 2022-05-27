@@ -3,18 +3,13 @@
 
 int main() {
     std::cout << "estou simulando um computador uhul" << std::endl;
-
+    
+    char evento;
     EventManager evMng;
 
-    while (1) {
-        char evento = evMng.getEvent();
+    do  {
+        evento = evMng.getEvent();
         std::cout << "evento: " << evento << std::endl;
-        
-        if (evento == 'a') {
-            std::cout << " desligando" << std::endl;
-            break;
-        }
-        
-    }
+    } while(evMng.treatEvent(evento)) ;
     return 0;
 }
