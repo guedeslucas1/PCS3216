@@ -2,14 +2,13 @@
 #include "eventManager.h"
 
 int main() {
-    std::cout << "estou simulando um computador uhul" << std::endl;
-    
-    char evento;
+    std::cout << "=== Inicio da simulação ===" << std::endl << std::endl;
+    EventManager::events_t evento;
     EventManager evMng;
-
+    
     do  {
         evento = evMng.getEvent();
-        std::cout << "evento: " << evento << std::endl;
     } while(evMng.treatEvent(evento)) ;
+
     return 0;
 }

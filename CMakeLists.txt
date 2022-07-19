@@ -10,6 +10,8 @@ add_library(lib
     src/eventManager.cpp
     src/dumper.cpp
     src/loader.cpp
+    src/virtualMachine.cpp
+    src/assembler.cpp
 )
 
 target_link_libraries(main lib)

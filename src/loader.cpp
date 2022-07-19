@@ -3,29 +3,48 @@
 #include <iostream>
 #include <fstream>
 
-Loader::Loader() {
-    
+Loader::Loader(uint8_t* memory_ptr, uint32_t memory_size) {
+    this->memory_ptr = memory_ptr;
+    this->memory_size = memory_size;
 }
 
-void Loader::memoryWrite() {
-    std::ofstream memory_file;
-    // TODO - o resto kk
-}
+bool Loader::memoryWrite(std::string file_name, uint32_t address) {
+    std::cout  << "lendo o arquivo" << std::endl;
+    std::ifstream program_file;
+    std::string line;
+    program_file.open (file_name, std::ios::in);
+    int counter = 0;
+    int byte1, byte2;
+    while (getline(program_file,line)) {
+        // Output the text from the file
+        std::cout << "linha " << counter++ <<": " << line << std::endl;
+        //std::cout << line[10] << std::endl;
 
-void Loader::getDataFromUser() {
-    std::cout << "Digite o endereço inicial: (na forma 0x...): ";
-    std::cin >> this->initial_address;
-
-    std::cout << "Digite os valores dos bytes para serem escritos na memória" << std::endl;
-    std::cout << "Quando acabar, digite 'k'";
-    
-    int index = 0;
-    std::string input;
-    std::cin >> input;
-    while(input != "k") {
-        this->data_buffer[index++] = (uint8_t)(stoi(input));
-        std::cin >> input;
+        std::cout<< std::endl;
+        if  (line.substr(0, 4) != "1101") {
+            byte1 = stoi(line.substr(0, 8), nullptr, 2);
+            byte2 = stoi(line.substr(8, 16), nullptr, 2);
+            this->memoryWriteByte(address++, byte1);
+            this->memoryWriteByte(address++, byte2);
+        } else {
+            byte1 = stoi(line.substr(0, 8), nullptr, 2);
+            this->memoryWriteByte(address++, byte1);
+        }
     }
 
-    this->data_lenght = index;
+    std::cout << std::endl << "fim de leitura" << std::endl;
+    program_file.close();
+
+    return true;
 }
+
+bool Loader::memoryWriteByte(uint32_t address, uint8_t value) {
+    if (address > this->memory_size) {
+        std::cout << "ERROR: out of memory bounds";
+        return false;
+    }
+    
+    this->memory_ptr[address] = value;
+    return true;
+}
+

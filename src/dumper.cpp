@@ -5,35 +5,38 @@
 #include <math.h>  
 #include <iomanip>
 
-Dumper::Dumper() {
-
+void print_format_int(int value, int n_of_chars) {
+    std::cout << "0x" << std::hex << value;
+    int n_digits = (int)(log(value+1)/log(16)) + 2;
+    if (value == 255) {
+        n_digits--;
+    }
+    for (int i = n_digits; i < n_of_chars - 1; i++)
+        std::cout << " " ;
 }
 
-void Dumper::readMemory(int initialAddress, int finalAddress) {
-    std::ifstream memoryFile;
-    std::string line;
-    memoryFile.open ("../mem/memory.txt", std::ios::in);
+Dumper::Dumper(uint8_t* memory_ptr, uint32_t memory_size) {
+    this->memory_ptr = memory_ptr;
+    this->memory_size = memory_size;
+}
 
-    int currentReadingLine = 0;
+bool Dumper::readMemory(int initialAddress, int finalAddress) {
+    std::cout << std::endl << "--- LEITURA DA MEMÓRIA DE 0x" << std::hex << initialAddress << " ATÉ 0x" << std::hex << finalAddress << " ---" << std::endl;
 
-    /** PRINTANDO A TABELA DE MEMÓRIA **/
-    while (memoryFile.is_open() && getline(memoryFile,line) && currentReadingLine <= finalAddress) {
+    for (int byte_line = 0; byte_line < finalAddress; byte_line += 16) {    
+        print_format_int(byte_line, 6);
+        std::cout << ": ";
 
-        // endereços (hexadecimais) a esquerda
-        std::cout << "0x" << std::hex << currentReadingLine;
-
-        int n_digits = (int)(log(currentReadingLine+1)/log(16)); // calculando o número de digitos do endereço e adicionando espaços se necessário, pra deixar alinhada
-        for (int i = n_digits; i < 3; i++)
-            std::cout << " " ;
-        std::cout << ":";
-
-        // valores a direita
-        for (int i = 0; i < 16; i++)
-            std::cout << ((currentReadingLine + i >= initialAddress && currentReadingLine + i <= finalAddress) ? line.substr(3*i, 3) : "   ");
+        for (int byte = 0; byte < 16; byte++) {
+            if (byte_line + byte < finalAddress && byte_line+byte >= initialAddress) {
+                //std::cout << (int)this->memory_ptr[byte_line + byte] << "  ";
+                print_format_int((int)this->memory_ptr[byte_line + byte], 6);
+            } else {
+                std::cout << "     ";
+            }
+        }
         std::cout << std::endl;
-
-        currentReadingLine += 16;
     }
 
-    memoryFile.close();
+    return true;
 }
