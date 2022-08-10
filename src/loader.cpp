@@ -8,8 +8,10 @@ Loader::Loader(uint8_t* memory_ptr, uint32_t memory_size) {
     this->memory_size = memory_size;
 }
 
-bool Loader::memoryWrite(std::string file_name, uint32_t address) {
-    std::cout  << "lendo o arquivo" << std::endl;
+bool Loader::memoryWrite(std::string file_name, uint32_t address, bool log) {
+    
+    if (log)
+        std::cout   << std::endl << "Lendo o arquivo" << std::endl  << std::endl;
     std::ifstream program_file;
     std::string line;
     program_file.open (file_name, std::ios::in);
@@ -17,10 +19,11 @@ bool Loader::memoryWrite(std::string file_name, uint32_t address) {
     int byte1, byte2;
     while (getline(program_file,line)) {
         // Output the text from the file
-        std::cout << "linha " << counter++ <<": " << line << std::endl;
-        //std::cout << line[10] << std::endl;
+        if (log)    {
+            std::cout << "linha " << ++counter <<": " << line << std::endl;
+            std::cout<< std::endl;
+        }
 
-        std::cout<< std::endl;
         if  (line.substr(0, 4) != "1101") {
             byte1 = stoi(line.substr(0, 8), nullptr, 2);
             byte2 = stoi(line.substr(8, 16), nullptr, 2);
@@ -31,8 +34,8 @@ bool Loader::memoryWrite(std::string file_name, uint32_t address) {
             this->memoryWriteByte(address++, byte1);
         }
     }
-
-    std::cout << std::endl << "fim de leitura" << std::endl;
+    if (log)
+        std::cout << "Fim de escrita na memória" << std::endl << std::endl ;
     program_file.close();
 
     return true;

@@ -7,7 +7,7 @@
 class Loader {
     public:
         Loader(uint8_t* memory_ptr, uint32_t memory_size);
-        bool memoryWrite(std::string file_name, uint32_t address);
+        bool memoryWrite(std::string file_name, uint32_t address, bool log);
         bool memoryWriteByte(uint32_t address, uint8_t value);
         uint8_t* memory_ptr;
         uint32_t memory_size;

@@ -12,18 +12,17 @@ class VirtualMachine {
     public:
         VirtualMachine();
         
-        bool execute(uint32_t initial_address);
+        bool execute(int initial_address, bool log);
+
 
         uint8_t memory[4096] = {0};
     
-        uint32_t acc;
+        uint16_t acc;
 
         Dumper dump;
         Loader load;
         Assembler asmblr;
 
-    private:
-        
 };
 
 #endif
